@@ -24,10 +24,27 @@ bq load  --source_format=NEWLINE_DELIMITED_JSON --json_extension=GEOJSON --autod
 gs://com_area_geo/cm_nl.geojsonl \
 ```
 
+## Data Cleaning
+
+Preliminary exploration of the data reveals incomplete records and anomalies which needed to be adressed. 
+This includes obvious cases such as missing coordinates. Looking at longest distances between start and end points of trips with the following query:
+
+```
+select
+  ride_id,
+  st_distance(st_geogpoint(start_lng, start_lat),st_geogpoint(end_lng, end_lat)) / 1000 as trip_distance_km,
+  timestamp_diff(ended_at,started_at, MINUTE) as trip_duration
+
+FROM `analytics-portfolio-395916.divvy_trip_data.Trips`
+ORDER BY
+  trip_distance_km DESC
+
+```
+
 
 
 
 ## List of sql-queries with description
 ### Setup, Data Exploration,
-### Data Cleaning
+
 ### Analysis
