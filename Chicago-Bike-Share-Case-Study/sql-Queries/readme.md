@@ -14,8 +14,15 @@ To provide more depth and breath to the analysis, I have added the geogrpahic bo
 
 Divvy Trip Data is available in csv format. I downloaded the data, created Google Cloud storage bucket and created a corresponding Dataset in a designated Google BigQuery (BQ) Project. The Community Area data is available on Chicacgo Data Portal. The data is available in many common formats. I dowloaded the data in geojson format. However, BigQuery requires geojson data to be in the newline-delimited format. (This allows each line of the file to read, parsed and processed without readng the whole file into memory). To convert the json file to ndjson I used the jq command-line tool:
 
-type cm.geojson | jq -c ".features[]" > cm.geojsonl
+`type cm.geojson | jq -c ".features[]" > cm.geojsonl`
 
+Uploading newline delimited geojson via console is not supported in BigQueyr. Google Cloud shell upload script:
+
+```
+bq load  --source_format=NEWLINE_DELIMITED_JSON --json_extension=GEOJSON --autodetect \
+ divvy_trip_data.comm_areas_geo \
+gs://com_area_geo/cm_nl.geojsonl \
+```
 
 
 
